@@ -85,6 +85,11 @@ class Share : ComponentActivity() {
                     receivedLink = it
                 }
             }
+            intent?.action == Intent.ACTION_SEND -> {
+                intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+                    receivedLink = it
+                }
+            }
         }
         if (receivedLink.isBlank()) {
             finish()
@@ -125,7 +130,11 @@ class Share : ComponentActivity() {
                     ).show()
                     finish()
                 }
-                val platformLink = data.linksByPlatform[service]?.url
+                val platformLink = if (service == "odesli") {
+                    data.pageUrl
+                } else {
+                    data.linksByPlatform[service]?.url
+                }
                 if (!platformLink.isNullOrBlank()) {
                     val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                     val clip = ClipData.newPlainText("Link", platformLink)

@@ -15,6 +15,7 @@ enum class MusicProviders(val label: String, val service: String) {
     Deezer("Deezer", "deezer"),
     Itunes("iTunes", "itunes"),
     Napster("Napster", "napster"),
+    Odesli("Odesli Page", "odesli"),
     Pandora("Pandora", "pandora"),
     Soundcloud("SoundCloud", "soundcloud"),
     Spotify("Spotify", "spotify"),

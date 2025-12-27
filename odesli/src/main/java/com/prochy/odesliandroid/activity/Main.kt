@@ -343,7 +343,11 @@ fun OdesliLayout() {
                             val title = songData.entitiesByUniqueId[outputService]?.title
                             val artist = songData.entitiesByUniqueId[outputService]?.artistName
                             val service = getLabelFromService(outputService)
-                            val link = songData.linksByPlatform[outputService]?.url
+                            val link = if (outputService == "odesli") {
+                                songData.pageUrl
+                            } else {
+                                songData.linksByPlatform[outputService]?.url
+                            }
                             val type = songData.entitiesByUniqueId[songData.entitiesByUniqueId.keys.first()]?.type ?: ""
 
                             Utils.SongInfo(
