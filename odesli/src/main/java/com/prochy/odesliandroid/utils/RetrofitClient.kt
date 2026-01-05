@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitClient {
 
-    fun getData(context: Context, link: String, countryCode: String, callback: (OdesliData) -> Unit) {
+    fun getData(context: Context, link: String, countryCode: String, callback: (OdesliData?) -> Unit) {
         val retrofit: Retrofit = Retrofit.Builder().baseUrl("https://api.song.link/").addConverterFactory(
             GsonConverterFactory.create()).build()
 
@@ -19,17 +19,19 @@ class RetrofitClient {
         call.enqueue(object : Callback<OdesliData> {
             override fun onResponse(call: Call<OdesliData>, response: Response<OdesliData>) {
                 if(response.isSuccessful){
-                    val data: OdesliData = response.body() as OdesliData
+                    val data: OdesliData? = response.body()
                     callback(data)
+                } else {
+                    callback(null)
                 }
             }
             override fun onFailure(call: Call<OdesliData>, t: Throwable) {
-                Toast.makeText(context, "Odesli request Failed", Toast.LENGTH_SHORT).show()
+                callback(null)
             }
         })
     }
 
-    fun getCountry(context: Context, callback: (LocationData) -> Unit) {
+    fun getCountry(context: Context, callback: (LocationData?) -> Unit) {
         val retrofit: Retrofit = Retrofit.Builder().baseUrl("https://ipinfo.io").addConverterFactory(
             GsonConverterFactory.create()).build()
         val service: LocationService = retrofit.create(LocationService::class.java)
@@ -37,12 +39,14 @@ class RetrofitClient {
         call.enqueue(object : Callback<LocationData> {
             override fun onResponse(call: Call<LocationData>, response: Response<LocationData>) {
                 if(response.isSuccessful){
-                    val data: LocationData = response.body() as LocationData
+                    val data: LocationData? = response.body()
                     callback(data)
+                } else {
+                    callback(null)
                 }
             }
             override fun onFailure(call: Call<LocationData>, t: Throwable) {
-                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                callback(null)
             }
         })
     }
