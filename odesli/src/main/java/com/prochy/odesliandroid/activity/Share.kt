@@ -356,9 +356,14 @@ fun ShareActivityLayout(receivedLink: String) {
                 }
 
                 val musicServices = MusicProviders.entries.map { it.service }
-                val thumbnail = receivedData.value.entitiesByUniqueId[outputService]?.thumbnailUrl
-                val title = receivedData.value.entitiesByUniqueId[outputService]?.title
-                val artist = receivedData.value.entitiesByUniqueId[outputService]?.artistName
+                val targetEntity = if (outputService == "odesli") {
+                    receivedData.value.entitiesByUniqueId.values.firstOrNull()
+                } else {
+                    receivedData.value.entitiesByUniqueId[outputService]
+                }
+                val thumbnail = targetEntity?.thumbnailUrl
+                val title = targetEntity?.title
+                val artist = targetEntity?.artistName
                 val service = getLabelFromService(outputService)
                 val link = if (outputService == "odesli") {
                     receivedData.value.pageUrl
