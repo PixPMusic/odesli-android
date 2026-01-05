@@ -266,6 +266,11 @@ fun OdesliLayout() {
                         receivedLinks = false
                         triggeredRequest = true
                         Utils.getMusicData(text, context) { data ->
+                            if (data == null) {
+                                triggeredRequest = false
+                                Toast.makeText(context, context.getString(R.string.unexpected_error), Toast.LENGTH_SHORT).show()
+                                return@getMusicData
+                            }
                             songData = data
                             triggeredRequest = false
                             receivedLinks = true
