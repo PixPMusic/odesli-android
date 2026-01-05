@@ -24,5 +24,6 @@
     <string name="copy">Copy</string>
     <string name="open">Open</string>
     <string name="image_error">Image failed to load</string>
+    <string name="link_copied">Link copied</string>
 
 </resources>

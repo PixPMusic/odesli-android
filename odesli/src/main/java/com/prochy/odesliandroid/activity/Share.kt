@@ -151,7 +151,7 @@ class Share : ComponentActivity() {
                     // Feedback for successful copy
                     Toast.makeText(
                         this,
-                        this.getString(R.string.copy) + " " + this.getString(R.string.share), // "Copy Share" -> "Link Copied" might be better but reusing strings
+                        this.getString(R.string.link_copied),
                         Toast.LENGTH_SHORT
                     ).show()
                     finish()
