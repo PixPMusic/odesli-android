@@ -42,12 +42,16 @@ Left to right:
 - Main UI convert
 - Share UI
 
+# Libraries/APIs used
+
+- [Odesli/Songlink](https://odesli.co/)
+- [Coil](https://coil-kt.github.io/coil/)
 - [Retrofit](https://github.com/square/retrofit)
 - [IPinfo](https://ipinfo.io)
 
 # Building and Signing
 
-This project uses a secure signing configuration that supports both local development and CI/CD without committing the keystore to the repository.
+To sign your builds, you'll need to generate a keystore file and configure your repository secrets to allow GitHub Actions to sign your releases.
 
 ### Local Builds
 
@@ -68,6 +72,8 @@ To build signed releases locally, you need to generate a keystore file:
    The build script will automatically detect the `odesli/release.keystore` file.
 
 ### CI/CD (GitHub Actions)
+
+You'll need your local signature file to generate the base64 encoded content of your keystore file.
 
 For GitHub Actions to build signed APKs, you must configure the following **Repository Secrets** (Settings > Secrets and variables > Actions):
 
