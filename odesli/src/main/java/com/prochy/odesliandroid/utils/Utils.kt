@@ -103,10 +103,12 @@ class Utils {
                     Text(
                         artist,
                         style = MaterialTheme.typography.titleSmall,
+                        textAlign = TextAlign.Center,
                     )
                     Text(
                         service,
                         style = MaterialTheme.typography.titleSmall,
+                        textAlign = TextAlign.Center,
                     )
                     Row(
                     ) {

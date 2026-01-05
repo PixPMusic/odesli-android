@@ -79,6 +79,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalTextInputService
@@ -104,6 +105,8 @@ import com.prochy.odesliandroid.utils.Utils.Companion.resetButtonColors
 import com.prochy.odesliandroid.utils.Utils.Companion.resetIconButtonColors
 import com.prochy.odesliandroid.utils.Utils.Companion.saveBooleanSetting
 import com.prochy.odesliandroid.utils.Utils.Companion.saveStringSetting
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 
 class Main : ComponentActivity() {
@@ -280,43 +283,80 @@ fun OdesliLayout() {
             }
         }
     ) { innerPadding ->
+
+
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxHeight(),
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState()),
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .widthIn(1.dp, Dp.Infinity)
-                            .weight(1f),
-                        value = text,
-                        onValueChange = {
-                            text = it
-                            receivedLinks = false
-                            triggeredRequest = false
-                        },
-                        label = { Text(stringResource(id = R.string.original_url)) },
-                        singleLine = true
-                    )
-                    Utils.ButtonSpacer()
-                    DynamicSelectTextField(
-                        modifier = Modifier.weight(1f),
-                        selectedValue = outputService,
-                        options = musicServices,
-                        label = stringResource(id = R.string.output_service),
-                        onValueChangedEvent = {
-                            outputService = it
-                        },
-                        reset = resetOutputField,
-                        showBackButton = true
-                    )
+                val configuration = LocalConfiguration.current
+                if (configuration.screenWidthDp >= 600) {
+                    // Tablet/Foldable: Row
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        OutlinedTextField(
+                            modifier = Modifier.weight(1f),
+                            value = text,
+                            onValueChange = {
+                                text = it
+                                receivedLinks = false
+                                triggeredRequest = false
+                            },
+                            label = { Text(stringResource(id = R.string.original_url)) },
+                            singleLine = true
+                        )
+                        DynamicSelectTextField(
+                            modifier = Modifier.weight(1f),
+                            selectedValue = outputService,
+                            options = musicServices,
+                            label = stringResource(id = R.string.output_service),
+                            onValueChangedEvent = {
+                                outputService = it
+                            },
+                            reset = resetOutputField,
+                            showBackButton = true
+                        )
+                    }
+                } else {
+                    // Phone: Column
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            value = text,
+                            onValueChange = {
+                                text = it
+                                receivedLinks = false
+                                triggeredRequest = false
+                            },
+                            label = { Text(stringResource(id = R.string.original_url)) },
+                            singleLine = true
+                        )
+                        Utils.ButtonSpacer()
+                        DynamicSelectTextField(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            selectedValue = outputService,
+                            options = musicServices,
+                            label = stringResource(id = R.string.output_service),
+                            onValueChangedEvent = {
+                                outputService = it
+                            },
+                            reset = resetOutputField,
+                            showBackButton = true
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
@@ -344,9 +384,10 @@ fun OdesliLayout() {
                                 strokeCap = StrokeCap.Round
                             )
                         if (receivedLinks) {
-                            val thumbnail = songData.entitiesByUniqueId[outputService]?.thumbnailUrl
-                            val title = songData.entitiesByUniqueId[outputService]?.title
-                            val artist = songData.entitiesByUniqueId[outputService]?.artistName
+                            val entity = songData.entitiesByUniqueId[outputService] ?: songData.entitiesByUniqueId.values.firstOrNull()
+                            val thumbnail = entity?.thumbnailUrl
+                            val title = entity?.title
+                            val artist = entity?.artistName
                             val service = getLabelFromService(outputService)
                             val link = if (outputService == "odesli") {
                                 songData.pageUrl
@@ -368,6 +409,7 @@ fun OdesliLayout() {
 
                 }
             }
+            Spacer(modifier = Modifier.height(100.dp))
             if (showCredits) {
                 Dialog(
                     onDismissRequest = { showCredits = false }
@@ -582,33 +624,34 @@ fun OdesliLayout() {
                                 showBackButton = true
                             )
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable(
-                                        preferredService.isNotEmpty()
-                                    ) {
-                                        saveBooleanSetting(
-                                            "autoCopy",
-                                            !autoCopy,
-                                            context
-                                        )
-                                        autoCopy = !autoCopy
-                                        if (!autoCopy) {
-                                            showOnFailed = false
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable(
+                                            preferredService.isNotEmpty()
+                                        ) {
                                             saveBooleanSetting(
-                                                "showOnFailed",
-                                                false,
+                                                "autoCopy",
+                                                !autoCopy,
                                                 context
                                             )
-                                        }
-                                    },
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.auto_copy)
-                                )
-                                Switch(
+                                            autoCopy = !autoCopy
+                                            if (!autoCopy) {
+                                                showOnFailed = false
+                                                saveBooleanSetting(
+                                                    "showOnFailed",
+                                                    false,
+                                                    context
+                                                )
+                                            }
+                                        },
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.auto_copy),
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    Switch(
                                     enabled = preferredService.isNotEmpty(),
                                     checked = autoCopy,
                                     onCheckedChange = {
@@ -630,25 +673,26 @@ fun OdesliLayout() {
                                 )
                             }
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable(
-                                        preferredService.isNotEmpty() && autoCopy
-                                    ) {
-                                        saveBooleanSetting(
-                                            "showOnFailed",
-                                            !showOnFailed,
-                                            context
-                                        )
-                                        showOnFailed = !showOnFailed
-                                    },
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.show_on_failed_setting)
-                                )
-                                Switch(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable(
+                                            preferredService.isNotEmpty() && autoCopy
+                                        ) {
+                                            saveBooleanSetting(
+                                                "showOnFailed",
+                                                !showOnFailed,
+                                                context
+                                            )
+                                            showOnFailed = !showOnFailed
+                                        },
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.show_on_failed_setting),
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    Switch(
                                     enabled = preferredService.isNotEmpty() && autoCopy,
                                     checked = showOnFailed,
                                     onCheckedChange = {
