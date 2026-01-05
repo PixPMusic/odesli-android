@@ -71,7 +71,7 @@ class Utils {
             }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
                     .padding(20.dp)
                     .fillMaxSize()
@@ -111,10 +111,11 @@ class Utils {
                         textAlign = TextAlign.Center,
                     )
                     Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         FilledTonalButton(
                             colors = regularButtonColors(),
-                            content = { Text(text = stringResource(id = R.string.share )) },
+                            content = { Text(text = stringResource(id = R.string.share ), maxLines = 1, softWrap = false) },
                             onClick = {
                                 val sendIntent: Intent = Intent().apply {
                                     action = Intent.ACTION_SEND
@@ -126,10 +127,9 @@ class Utils {
                                 startActivity(context, shareIntent, null)
                             }
                         )
-                        ButtonSpacer()
                         FilledTonalButton(
                             colors = regularButtonColors(),
-                            content = { Text(text = stringResource(id = R.string.copy)) },
+                            content = { Text(text = stringResource(id = R.string.copy), maxLines = 1, softWrap = false) },
                             onClick = {
                                 val clipboard: ClipboardManager? =
                                     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
@@ -137,10 +137,9 @@ class Utils {
                                 clipboard?.setPrimaryClip(clip)
                             }
                         )
-                        ButtonSpacer()
                         FilledTonalButton(
                             colors = regularButtonColors(),
-                            content = { Text(text = stringResource(id = R.string.open )) },
+                            content = { Text(text = stringResource(id = R.string.open ), maxLines = 1, softWrap = false) },
                             onClick = {
                                 openLink(link, context)
                             }

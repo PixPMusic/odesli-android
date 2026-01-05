@@ -257,14 +257,7 @@ fun OdesliLayout() {
                 exit = fadeOut()
             ) {
                 ExtendedFloatingActionButton(
-                    content = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_send),
-                            contentDescription = "Convert link"
-                        )
-                        Utils.ButtonSpacer()
-                        Text(text = stringResource(id = R.string.convert_link))
-                    },
+                    modifier = Modifier.padding(bottom = 16.dp),
                     onClick = {
                         receivedLinks = false
                         triggeredRequest = true
@@ -278,6 +271,14 @@ fun OdesliLayout() {
                             triggeredRequest = false
                             receivedLinks = true
                         }
+                    },
+                    content = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_send),
+                            contentDescription = stringResource(id = R.string.convert_link)
+                        )
+                        Utils.ButtonSpacer()
+                        Text(text = stringResource(id = R.string.convert_link))
                     }
                 )
             }
