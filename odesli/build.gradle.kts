@@ -12,12 +12,30 @@ android {
         applicationId = "com.prochy.odesliandroid"
         minSdk = 21
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+    }
+
+    signingConfigs {
+        create("release") {
+            val keystoreFile = System.getenv("RELEASE_KEYSTORE_PATH")?.let { file(it) } ?: file("release.keystore")
+            val keystorePassword = (System.getenv("RELEASE_KEYSTORE_PASSWORD") ?: "android").trim()
+            val keyAlias = (System.getenv("RELEASE_KEY_ALIAS") ?: "odesli").trim()
+            val keyPassword = (System.getenv("RELEASE_KEY_PASSWORD") ?: "android").trim()
+
+            if (keystoreFile.exists() && keystoreFile.length() > 0) {
+                storeFile = keystoreFile
+                storePassword = keystorePassword
+                this.keyAlias = keyAlias
+                this.keyPassword = keyPassword
+            } else {
+                println("Signing Config: Release keystore not found or empty. Falling back to debug signing.")
+            }
         }
     }
 
@@ -28,7 +46,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
         debug {
             isMinifyEnabled = false

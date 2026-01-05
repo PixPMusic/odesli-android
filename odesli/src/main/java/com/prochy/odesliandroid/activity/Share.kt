@@ -116,6 +116,15 @@ class Share : ComponentActivity() {
         )
         if (service.isNotBlank() && autoCopy) {
             Utils.getMusicData(receivedLink, this) { data ->
+                if (data == null) {
+                    Toast.makeText(
+                        this,
+                        this.getString(R.string.unexpected_error),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    finish()
+                    return@getMusicData
+                }
                 val type = data.entitiesByUniqueId[data.entitiesByUniqueId.keys.first()]?.type ?: ""
                 val errorString: String = if (type == "song") {
                     this.getString(R.string.song_not_found_error_popup)
@@ -139,6 +148,12 @@ class Share : ComponentActivity() {
                     val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                     val clip = ClipData.newPlainText("Link", platformLink)
                     clipboard.setPrimaryClip(clip)
+                    // Feedback for successful copy
+                    Toast.makeText(
+                        this,
+                        this.getString(R.string.link_copied),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     finish()
                 } else {
                     if (showOnFailed) {
@@ -285,6 +300,12 @@ fun ShareActivityLayout(receivedLink: String) {
         )
     ) }
     Utils.getMusicData(receivedLink, LocalContext.current) { data ->
+        if (data == null) {
+            triggeredRequest.value = false
+            Toast.makeText(context, context.getString(R.string.unexpected_error), Toast.LENGTH_SHORT).show()
+            (context as? ComponentActivity)?.finish()
+            return@getMusicData
+        }
         triggeredRequest.value = false
         receivedLinks.value = true
         receivedData.value = data
@@ -339,7 +360,11 @@ fun ShareActivityLayout(receivedLink: String) {
                 val title = receivedData.value.entitiesByUniqueId[outputService]?.title
                 val artist = receivedData.value.entitiesByUniqueId[outputService]?.artistName
                 val service = getLabelFromService(outputService)
-                val link = receivedData.value.linksByPlatform[outputService]?.url
+                val link = if (outputService == "odesli") {
+                    receivedData.value.pageUrl
+                } else {
+                    receivedData.value.linksByPlatform[outputService]?.url
+                }
                 val type = receivedData.value.entitiesByUniqueId[receivedData.value.entitiesByUniqueId.keys.first()]?.type ?: ""
                 Utils.SongInfo(
                     thumbnail = thumbnail.toString(),

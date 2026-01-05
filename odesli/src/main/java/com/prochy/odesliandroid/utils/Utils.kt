@@ -261,11 +261,15 @@ class Utils {
             startActivity(context, browserIntent, null)
         }
 
-        fun getMusicData(link: String, context: Context, callback: (OdesliData) -> Unit) {
+        fun getMusicData(link: String, context: Context, callback: (OdesliData?) -> Unit) {
 
             fun retroFitRequest(countryCode: String) {
                 var songData: OdesliData
-                RetrofitClient().getData(context, link, countryCode) { data ->
+                RetrofitClient().getData(link, countryCode) { data ->
+                    if (data == null) {
+                        callback(null)
+                        return@getData
+                    }
                     val entitiesByUniqueId = mutableMapOf<String, EntitiesData>()
 
                     data.entitiesByUniqueId.forEach { (_, song) -> // Make sure entities are keyed as service names
@@ -289,9 +293,13 @@ class Utils {
             val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
             var countryCode = tm!!.networkCountryIso
             if (countryCode.isNullOrEmpty()) { //use a 3rd party service to get country code if device doesn't have SIM
-                RetrofitClient().getCountry(context) { locationData ->
-                    countryCode = locationData.country
-                    retroFitRequest(countryCode)
+                RetrofitClient().getCountry() { locationData ->
+                    if (locationData == null) {
+                        callback(null)
+                    } else {
+                        countryCode = locationData.country
+                        retroFitRequest(countryCode)
+                    }
                 }
             } else {
                 retroFitRequest(countryCode)
