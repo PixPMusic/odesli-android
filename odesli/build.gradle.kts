@@ -8,12 +8,14 @@ android {
     namespace = "com.prochy.odesliandroid"
     compileSdk = 34
 
+    buildToolsVersion = "34.0.0"
+
     defaultConfig {
         applicationId = "com.prochy.odesliandroid"
         minSdk = 21
         targetSdk = 34
-        versionCode = 3
-        versionName = "1.1.3"
+        versionCode = 4
+        versionName = "1.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -46,7 +48,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
+            val releaseSigning = signingConfigs.getByName("release")
+            signingConfig = if (releaseSigning.storeFile != null && releaseSigning.storeFile!!.exists()) {
+                releaseSigning
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
         debug {
             isMinifyEnabled = false
@@ -58,7 +65,6 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_19
         sourceCompatibility = JavaVersion.VERSION_19
         targetCompatibility = JavaVersion.VERSION_19
     }

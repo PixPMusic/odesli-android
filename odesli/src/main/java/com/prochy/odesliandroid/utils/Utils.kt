@@ -15,10 +15,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -71,16 +75,18 @@ class Utils {
             }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
                     .padding(20.dp)
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .wrapContentHeight()
             ) {
                 element()
                 if (link.isEmpty() || link == "null") {
                     Box(
                         modifier = Modifier
-                            .fillMaxSize(),
+                            .fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -103,16 +109,19 @@ class Utils {
                     Text(
                         artist,
                         style = MaterialTheme.typography.titleSmall,
+                        textAlign = TextAlign.Center,
                     )
                     Text(
                         service,
                         style = MaterialTheme.typography.titleSmall,
+                        textAlign = TextAlign.Center,
                     )
                     Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         FilledTonalButton(
                             colors = regularButtonColors(),
-                            content = { Text(text = stringResource(id = R.string.share )) },
+                            content = { Text(text = stringResource(id = R.string.share ), maxLines = 1, softWrap = false) },
                             onClick = {
                                 val sendIntent: Intent = Intent().apply {
                                     action = Intent.ACTION_SEND
@@ -124,10 +133,9 @@ class Utils {
                                 startActivity(context, shareIntent, null)
                             }
                         )
-                        ButtonSpacer()
                         FilledTonalButton(
                             colors = regularButtonColors(),
-                            content = { Text(text = stringResource(id = R.string.copy)) },
+                            content = { Text(text = stringResource(id = R.string.copy), maxLines = 1, softWrap = false) },
                             onClick = {
                                 val clipboard: ClipboardManager? =
                                     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
@@ -135,10 +143,9 @@ class Utils {
                                 clipboard?.setPrimaryClip(clip)
                             }
                         )
-                        ButtonSpacer()
                         FilledTonalButton(
                             colors = regularButtonColors(),
-                            content = { Text(text = stringResource(id = R.string.open )) },
+                            content = { Text(text = stringResource(id = R.string.open ), maxLines = 1, softWrap = false) },
                             onClick = {
                                 openLink(link, context)
                             }

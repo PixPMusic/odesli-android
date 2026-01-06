@@ -13,12 +13,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -230,7 +234,9 @@ fun DynamicSelectTextFieldPopUp(
                     shape = RoundedCornerShape(16.dp),
                 ) {
                     Column(
-                        modifier = Modifier.padding(20.dp)
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .verticalScroll(rememberScrollState())
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -325,13 +331,13 @@ fun ShareActivityLayout(receivedLink: String) {
             ),
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
-                .height(dimensionResource(id = R.dimen.card_height))
+                .wrapContentHeight()
         ) {
             if (triggeredRequest.value) {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth()
                 ) {
                     LinearProgressIndicator(
                         color = MaterialTheme.colorScheme.secondary,
@@ -371,25 +377,27 @@ fun ShareActivityLayout(receivedLink: String) {
                     receivedData.value.linksByPlatform[outputService]?.url
                 }
                 val type = receivedData.value.entitiesByUniqueId[receivedData.value.entitiesByUniqueId.keys.first()]?.type ?: ""
-                Utils.SongInfo(
-                    thumbnail = thumbnail.toString(),
-                    title = title.toString(),
-                    artist = artist.toString(),
-                    service = service.toString(),
-                    link = link.toString(),
-                    odesliType = type,
-                    element = {
-                        DynamicSelectTextFieldPopUp(
-                            modifier = Modifier.width(350.dp),
-                            selectedValue = outputService,
-                            options = musicServices,
-                            label = stringResource(id = R.string.output_service),
-                            onValueChangedEvent = {
-                                outputService = it
-                            }
-                        )
-                    }
-                )
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    Utils.SongInfo(
+                        thumbnail = thumbnail.toString(),
+                        title = title.toString(),
+                        artist = artist.toString(),
+                        service = service.toString(),
+                        link = link.toString(),
+                        odesliType = type,
+                        element = {
+                            DynamicSelectTextFieldPopUp(
+                                modifier = Modifier.width(350.dp),
+                                selectedValue = outputService,
+                                options = musicServices,
+                                label = stringResource(id = R.string.output_service),
+                                onValueChangedEvent = {
+                                    outputService = it
+                                }
+                            )
+                        }
+                    )
+                }
             }
         }
     }
