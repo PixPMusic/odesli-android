@@ -80,7 +80,7 @@ class Utils {
                     .padding(20.dp)
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .verticalScroll(rememberScrollState())
+                    .wrapContentHeight()
             ) {
                 element()
                 if (link.isEmpty() || link == "null") {

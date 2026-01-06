@@ -8,6 +8,8 @@ android {
     namespace = "com.prochy.odesliandroid"
     compileSdk = 34
 
+    buildToolsVersion = "34.0.0"
+
     defaultConfig {
         applicationId = "com.prochy.odesliandroid"
         minSdk = 21
@@ -63,7 +65,6 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_19
         sourceCompatibility = JavaVersion.VERSION_19
         targetCompatibility = JavaVersion.VERSION_19
     }

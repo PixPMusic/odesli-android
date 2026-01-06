@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -376,25 +377,27 @@ fun ShareActivityLayout(receivedLink: String) {
                     receivedData.value.linksByPlatform[outputService]?.url
                 }
                 val type = receivedData.value.entitiesByUniqueId[receivedData.value.entitiesByUniqueId.keys.first()]?.type ?: ""
-                Utils.SongInfo(
-                    thumbnail = thumbnail.toString(),
-                    title = title.toString(),
-                    artist = artist.toString(),
-                    service = service.toString(),
-                    link = link.toString(),
-                    odesliType = type,
-                    element = {
-                        DynamicSelectTextFieldPopUp(
-                            modifier = Modifier.width(350.dp),
-                            selectedValue = outputService,
-                            options = musicServices,
-                            label = stringResource(id = R.string.output_service),
-                            onValueChangedEvent = {
-                                outputService = it
-                            }
-                        )
-                    }
-                )
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    Utils.SongInfo(
+                        thumbnail = thumbnail.toString(),
+                        title = title.toString(),
+                        artist = artist.toString(),
+                        service = service.toString(),
+                        link = link.toString(),
+                        odesliType = type,
+                        element = {
+                            DynamicSelectTextFieldPopUp(
+                                modifier = Modifier.width(350.dp),
+                                selectedValue = outputService,
+                                options = musicServices,
+                                label = stringResource(id = R.string.output_service),
+                                onValueChangedEvent = {
+                                    outputService = it
+                                }
+                            )
+                        }
+                    )
+                }
             }
         }
     }

@@ -207,8 +207,7 @@ fun OdesliLayout() {
         contentWindowInsets = WindowInsets(
             left = 30,
             right = 30,
-        ),
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        ),        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
             LargeTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -414,6 +413,7 @@ fun OdesliLayout() {
             if (!receivedLinks) {
                 Spacer(modifier = Modifier.height(100.dp))
             }
+            Spacer(modifier = Modifier.height(100.dp))
             if (showCredits) {
                 Dialog(
                     onDismissRequest = { showCredits = false }
