@@ -253,7 +253,7 @@ fun OdesliLayout() {
         },
         floatingActionButton = {
             AnimatedVisibility(
-                visible = text.isNotEmpty() && outputService.isNotEmpty(),
+                visible = text.isNotEmpty() && outputService.isNotEmpty() && !receivedLinks,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
@@ -411,7 +411,9 @@ fun OdesliLayout() {
 
                 }
             }
-            Spacer(modifier = Modifier.height(100.dp))
+            if (!receivedLinks) {
+                Spacer(modifier = Modifier.height(100.dp))
+            }
             if (showCredits) {
                 Dialog(
                     onDismissRequest = { showCredits = false }
