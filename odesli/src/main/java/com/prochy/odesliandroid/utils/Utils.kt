@@ -77,7 +77,7 @@ class Utils {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
-                    .padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 8.dp)
+                    .padding(20.dp)
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .verticalScroll(rememberScrollState())

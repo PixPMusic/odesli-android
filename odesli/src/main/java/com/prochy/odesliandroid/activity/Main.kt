@@ -258,7 +258,6 @@ fun OdesliLayout() {
                 exit = fadeOut()
             ) {
                 ExtendedFloatingActionButton(
-                    modifier = Modifier.padding(bottom = 16.dp),
                     onClick = {
                         receivedLinks = false
                         triggeredRequest = true

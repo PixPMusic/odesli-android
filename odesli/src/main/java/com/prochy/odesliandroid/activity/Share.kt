@@ -234,7 +234,7 @@ fun DynamicSelectTextFieldPopUp(
                 ) {
                     Column(
                         modifier = Modifier
-                            .padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 8.dp)
+                            .padding(20.dp)
                             .verticalScroll(rememberScrollState())
                     ) {
                         Row(
