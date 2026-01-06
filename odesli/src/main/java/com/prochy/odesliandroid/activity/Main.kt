@@ -253,7 +253,7 @@ fun OdesliLayout() {
         },
         floatingActionButton = {
             AnimatedVisibility(
-                visible = text.isNotEmpty() && outputService.isNotEmpty() && !receivedLinks,
+                visible = text.isNotEmpty() && outputService.isNotEmpty(),
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
@@ -796,7 +796,9 @@ fun DynamicSelectTextField(
                     shape = RoundedCornerShape(16.dp),
                 ) {
                     Column(
-                        modifier = Modifier.padding(20.dp)
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .verticalScroll(rememberScrollState())
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
