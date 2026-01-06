@@ -376,7 +376,7 @@ fun OdesliLayout() {
                 ) {
                     Box(
                         modifier = Modifier
-                            .fillMaxSize(),
+                            .fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
                         if (triggeredRequest && !receivedLinks)
