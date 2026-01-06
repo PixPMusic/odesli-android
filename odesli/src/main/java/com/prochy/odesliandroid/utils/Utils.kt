@@ -20,7 +20,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -75,9 +77,10 @@ class Utils {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
-                    .padding(20.dp)
+                    .padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 8.dp)
                     .fillMaxWidth()
                     .wrapContentHeight()
+                    .verticalScroll(rememberScrollState())
             ) {
                 element()
                 if (link.isEmpty() || link == "null") {
