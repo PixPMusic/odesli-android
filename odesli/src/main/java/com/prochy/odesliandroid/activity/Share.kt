@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -325,13 +326,13 @@ fun ShareActivityLayout(receivedLink: String) {
             ),
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
-                .height(dimensionResource(id = R.dimen.card_height))
+                .wrapContentHeight()
         ) {
             if (triggeredRequest.value) {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth()
                 ) {
                     LinearProgressIndicator(
                         color = MaterialTheme.colorScheme.secondary,
