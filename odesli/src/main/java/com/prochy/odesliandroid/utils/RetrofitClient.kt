@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitClient {
 
-    fun getData(link: String, countryCode: String, callback: (OdesliData?) -> Unit) {
+    fun getData(link: String, countryCode: String, callback: (MusicDataResult) -> Unit) {
         val retrofit: Retrofit = Retrofit.Builder().baseUrl("https://api.song.link/").addConverterFactory(
             GsonConverterFactory.create()).build()
 
@@ -16,15 +16,10 @@ class RetrofitClient {
         val call: Call<OdesliData> = service.getSongLink(link, countryCode)
         call.enqueue(object : Callback<OdesliData> {
             override fun onResponse(call: Call<OdesliData>, response: Response<OdesliData>) {
-                if(response.isSuccessful){
-                    val data: OdesliData? = response.body()
-                    callback(data)
-                } else {
-                    callback(null)
-                }
+                callback(musicDataResult(response))
             }
             override fun onFailure(call: Call<OdesliData>, t: Throwable) {
-                callback(null)
+                callback(MusicDataResult.Failure)
             }
         })
     }

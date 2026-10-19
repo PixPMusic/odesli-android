@@ -92,7 +92,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.prochy.odesliandroid.R
+import com.prochy.odesliandroid.ui.WebsiteFallbackDialog
 import com.prochy.odesliandroid.ui.theme.AppTheme
+import com.prochy.odesliandroid.utils.MusicDataResult
 import com.prochy.odesliandroid.utils.Constants
 import com.prochy.odesliandroid.utils.MusicProviders
 import com.prochy.odesliandroid.utils.MusicProviders.Companion.getLabelFromService
@@ -147,6 +149,7 @@ fun OdesliLayout() {
     var outputService by remember { mutableStateOf("") }
     var receivedLinks by remember { mutableStateOf(false) }
     var triggeredRequest by remember { mutableStateOf(false) }
+    var fallbackUrl by remember { mutableStateOf<String?>(null) }
     var showSettings by remember { mutableStateOf(false) }
     var showCredits by remember { mutableStateOf(false) }
     var autoCopy by remember { mutableStateOf(
@@ -180,6 +183,7 @@ fun OdesliLayout() {
         outputService = ""
         receivedLinks = false
         songData = OdesliData("", "", "", emptyMap(), emptyMap())
+        fallbackUrl = null
     }
 
     fun resetPreferredState() {
@@ -201,6 +205,10 @@ fun OdesliLayout() {
             false,
             context
         )
+    }
+
+    fallbackUrl?.let { originalUrl ->
+        WebsiteFallbackDialog(originalUrl = originalUrl, onDismiss = { fallbackUrl = null })
     }
 
     Scaffold(
@@ -261,15 +269,20 @@ fun OdesliLayout() {
                     onClick = {
                         receivedLinks = false
                         triggeredRequest = true
-                        Utils.getMusicData(text, context) { data ->
-                            if (data == null) {
-                                triggeredRequest = false
-                                Toast.makeText(context, context.getString(R.string.unexpected_error), Toast.LENGTH_SHORT).show()
-                                return@getMusicData
-                            }
-                            songData = data
+                        val submittedUrl = text
+                        fallbackUrl = null
+                        Utils.getMusicData(submittedUrl, context) { result ->
                             triggeredRequest = false
-                            receivedLinks = true
+                            when (result) {
+                                is MusicDataResult.Success -> {
+                                    songData = result.data
+                                    receivedLinks = true
+                                }
+                                MusicDataResult.PublicApiRetired -> fallbackUrl = submittedUrl
+                                MusicDataResult.Failure -> Toast.makeText(
+                                    context, context.getString(R.string.unexpected_error), Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     },
                     content = {

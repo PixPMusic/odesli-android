@@ -56,7 +56,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.prochy.odesliandroid.R
+import com.prochy.odesliandroid.ui.WebsiteFallbackDialog
 import com.prochy.odesliandroid.ui.theme.AppTheme
+import com.prochy.odesliandroid.utils.MusicDataResult
 import com.prochy.odesliandroid.utils.MusicProviders
 import com.prochy.odesliandroid.utils.MusicProviders.Companion.getLabelFromService
 import com.prochy.odesliandroid.utils.OdesliData
@@ -65,7 +67,7 @@ import com.prochy.odesliandroid.utils.Utils.Companion.getBooleanSetting
 import com.prochy.odesliandroid.utils.Utils.Companion.getStringSetting
 
 class Share : ComponentActivity() {
-    private fun displayOdesliPopUp(receivedLink: String) {
+    private fun displayOdesliPopUp(receivedLink: String, publicApiRetired: Boolean = false) {
         // Dynamically invoke dim behind
         val layoutParams = window.attributes
         layoutParams.dimAmount = 0.75f
@@ -74,7 +76,7 @@ class Share : ComponentActivity() {
         setContent {
             AppTheme {
                 Surface {
-                    ShareActivityLayout(receivedLink)
+                    ShareActivityLayout(receivedLink, publicApiRetired)
                 }
             }
         }
@@ -119,8 +121,12 @@ class Share : ComponentActivity() {
             this
         )
         if (service.isNotBlank() && autoCopy) {
-            Utils.getMusicData(receivedLink, this) { data ->
-                if (data == null) {
+            Utils.getMusicData(receivedLink, this) { result ->
+                if (result == MusicDataResult.PublicApiRetired) {
+                    displayOdesliPopUp(receivedLink, publicApiRetired = true)
+                    return@getMusicData
+                }
+                if (result !is MusicDataResult.Success) {
                     Toast.makeText(
                         this,
                         this.getString(R.string.unexpected_error),
@@ -129,7 +135,8 @@ class Share : ComponentActivity() {
                     finish()
                     return@getMusicData
                 }
-                val type = data.entitiesByUniqueId[data.entitiesByUniqueId.keys.first()]?.type ?: ""
+                val data = result.data
+                val type = data.entitiesByUniqueId.values.firstOrNull()?.type ?: ""
                 val errorString: String = if (type == "song") {
                     this.getString(R.string.song_not_found_error_popup)
                 } else {
@@ -142,6 +149,7 @@ class Share : ComponentActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                     finish()
+                    return@getMusicData
                 }
                 val platformLink = if (service == "odesli") {
                     data.pageUrl
@@ -284,9 +292,10 @@ fun DynamicSelectTextFieldPopUp(
 }
 
 @Composable
-fun ShareActivityLayout(receivedLink: String) {
+fun ShareActivityLayout(receivedLink: String, initiallyRetired: Boolean = false) {
     val context = LocalContext.current
-    val shouldDismiss = remember {
+    var publicApiRetired by remember(receivedLink) { mutableStateOf(initiallyRetired) }
+    val shouldDismiss = remember(receivedLink) {
         mutableStateOf(false)
     }
     val triggeredRequest = remember {
@@ -305,16 +314,30 @@ fun ShareActivityLayout(receivedLink: String) {
             emptyMap()
         )
     ) }
-    Utils.getMusicData(receivedLink, LocalContext.current) { data ->
-        if (data == null) {
-            triggeredRequest.value = false
-            Toast.makeText(context, context.getString(R.string.unexpected_error), Toast.LENGTH_SHORT).show()
-            (context as? ComponentActivity)?.finish()
-            return@getMusicData
+    LaunchedEffect(receivedLink) {
+        if (!publicApiRetired) {
+            Utils.getMusicData(receivedLink, context) { result ->
+                triggeredRequest.value = false
+                when (result) {
+                    is MusicDataResult.Success -> {
+                        receivedLinks.value = true
+                        receivedData.value = result.data
+                    }
+                    MusicDataResult.PublicApiRetired -> publicApiRetired = true
+                    MusicDataResult.Failure -> {
+                        Toast.makeText(context, context.getString(R.string.unexpected_error), Toast.LENGTH_SHORT).show()
+                        (context as? ComponentActivity)?.finish()
+                    }
+                }
+            }
         }
-        triggeredRequest.value = false
-        receivedLinks.value = true
-        receivedData.value = data
+    }
+    if (publicApiRetired) {
+        WebsiteFallbackDialog(originalUrl = receivedLink, onDismiss = {
+            shouldDismiss.value = true
+            (context as? ComponentActivity)?.finish()
+        })
+        return
     }
     Dialog(
         onDismissRequest = {

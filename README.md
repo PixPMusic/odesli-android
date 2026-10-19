@@ -9,6 +9,8 @@ Thanks to the simplicity of this app, it supports all types of devices within th
 
 # How does it work?
 
+Odesli has retired its public API. When a conversion receives the retirement response, the app offers **Open in Songlink** to find the original song or album on the Songlink website in your browser. Choose a streaming service on that page; preferred-service auto-copy requires a successful API response.
+
 This app uses the Odesli API to convert links to any streaming service of your choosing.\
  Generally speaking this conversion process lasts max 10 seconds.\
  The request to [Odesli API](https://odesli.co/) is sent using the [Retrofit library](https://github.com/square/retrofit), the [Coil library](https://coil-kt.github.io/coil/) is responsible for asynchronously rendering the song/album cover.\
