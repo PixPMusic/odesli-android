@@ -25,5 +25,9 @@
     <string name="open">Open</string>
     <string name="image_error">Image failed to load</string>
     <string name="link_copied">Link copied</string>
+    <string name="public_api_retired_title">Open with Songlink</string>
+    <string name="public_api_retired_message">Odesli has retired its public API. You can still find music links on the Songlink website. Open your original link in the browser?</string>
+    <string name="open_in_songlink">Open in Songlink</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

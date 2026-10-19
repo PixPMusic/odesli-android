@@ -22,5 +22,10 @@
     <string name="copy">Kopírovať</string>
     <string name="open">Otvoriť</string>
     <string name="image_error">Obrázok nebolo možné načítať</string>
+    <string name="link_copied">Odkaz skopírovaný</string>
     <string name="show_on_failed_setting">Ukázať menu keď pesníčka/album nebol nájdený</string>
+    <string name="public_api_retired_title">Otvoriť cez Songlink</string>
+    <string name="public_api_retired_message">Odesli ukončilo prevádzku verejného API. Odkazy na hudbu môžete naďalej nájsť na webe Songlink. Otvoriť pôvodný odkaz v prehliadači?</string>
+    <string name="open_in_songlink">Otvoriť v Songlink</string>
+    <string name="cancel">Zrušiť</string>
 </resources>
