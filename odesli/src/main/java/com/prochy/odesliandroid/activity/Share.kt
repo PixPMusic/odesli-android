@@ -149,6 +149,7 @@ class Share : ComponentActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                     finish()
+                    return@getMusicData
                 }
                 val platformLink = if (service == "odesli") {
                     data.pageUrl
